@@ -3,12 +3,29 @@
 
     <h2>I'm extending the base template</h2>
 
-    {% for task in all_tasks%}
+    <!-- {% for task in tasks%}
         {{task.task_name}}<br>
         {{task.catagory_name}}<br>
         {{task.task_description}}<br>
         {{task.is_urgent}}<br>
         {{task.due_date}}<br>
-    {% endfor %}
+    {% endfor %} -->
+
+    <ul class="collapsible">
+        {% for task in tasks %}
+        <li>
+          <div class="collapsible-header">
+              <i class="fas fa-caret-down"></i>
+              <strong>{{ task.task_name }}</strong> : {{task.due_date}}
+            </div>
+            <div class="collapsible-body white-text light-blue darken-4 text-shadow">
+                <strong>{{task.catagory_name}}</strong>
+                <p>{{task.task_description}}</p>
+            </div>
+        </li>
+        {% endfor %}
+      </ul>
 
     {% endblock %}
+
+    

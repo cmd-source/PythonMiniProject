@@ -22,9 +22,33 @@ def get_tasks():
     tasks = mongo.db.tasks.find()
     return render_template("tasks.html", all_tasks = tasks)
 
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     return render_template("register.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        existing_user = mongo.db.users.find_one(
+                {"username":request.form.get("username").lower()})
+    
+            if existing_user:
+                if check_password_hash(
+                    existing_user["password"], request.form.get("password")):
+                        session["user"] = request.form.get("username").lower()
+                        flash("Welcome, {}".format(request.form.get("username")))
+                else:
+                    flash("Incorrect username/password incorrect")
+                    return redirect(url_for("login"))
+
+            else:
+                flash("Incorrect username/password incorrect")
+                return redirect(url_for("login"))
+    return render_template("login.html")
+
+
 
 print(__name__)
 if __name__ == "__main__":

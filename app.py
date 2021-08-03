@@ -87,6 +87,7 @@ def profile(username):
 
     return redirect(url_for("login"))
 
+
 @app.route("/logout")
 def logout():
     flash("You have been logged out")
@@ -94,10 +95,22 @@ def logout():
     return redirect(url_for("login"))
 
 
-@app.route("/add_tasks")
+@app.route("/add_tasks", methods =["GET", "POST"])
 def add_tasks():
-
-    return render_template("add_tasks.html")
+    if request.method == "POST":
+        is_urgent = "on" if request.form.get("category_name") else "off"
+        task = {
+            "category_name": request.form.get("category_name"),
+            "task_name": request.form.get("task_description"),
+            "task_description": request.form.get("task_description"),
+            "is_urgent": request.form.get("due_date"),
+            "created_by": session["user"]
+        }
+        mongo.db.tasks.insert_one(task)
+        flash("Task Successfull added")
+        return redirect(url_for("get_tasks"))
+    categories = mongo.db.categories.find().sort("category_name", 1)
+    return render_template("add_tasks.html", categories=categories )
 
 
 if __name__ == "__main__":
